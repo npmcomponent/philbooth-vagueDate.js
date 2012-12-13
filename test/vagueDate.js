@@ -33,6 +33,12 @@
                 assert.isFunction(vagueDate.get);
             });
 
+            test('get throws with no arguments', function () {
+                assert.throws(function () {
+                    vagueDate.get();
+                });
+            });
+
             test('get throws when from is bad string', function () {
                 assert.throws(function () {
                     vagueDate.get({
@@ -295,6 +301,18 @@
 
             test('set function is exported', function () {
                 assert.isFunction(vagueDate.set);
+            });
+
+            test('set throws with no arguments', function () {
+                assert.throws(function () {
+                    vagueDate.set();
+                });
+            });
+
+            test('set throws with bad argument', function () {
+                assert.throws(function () {
+                    vagueDate.set('foo');
+                });
             });
         });
     });

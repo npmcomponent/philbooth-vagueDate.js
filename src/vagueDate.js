@@ -156,7 +156,56 @@
         return time;
     }
 
-    function setVagueDate () {
+    function setVagueDate (vagueDate) {
+        var date = new Date();
+
+        switch (vagueDate) {
+            case 'now':
+                break;
+            case 'today':
+                setEndOfDay(date);
+                break;
+            case 'yesterday':
+                date.setDate(date.getDate() - 1);
+                setEndOfDay(date);
+                break;
+            case 'tomorrow':
+                date.setDate(date.getDate() + 1);
+                setEndOfDay(date);
+                break;
+            case 'last week':
+                setEndOfDay(date);
+                break;
+            case 'next week':
+                setEndOfDay(date);
+                break;
+            case 'last month':
+                setEndOfDay(date);
+                break;
+            case 'next month':
+                setEndOfDay(date);
+                break;
+            case 'last year':
+                setEndOfDay(date);
+                break;
+            case 'next year':
+                setEndOfDay(date);
+                break;
+            case 'whenever':
+                setEndOfDay(date);
+                break;
+            default:
+                throw new Error('Invalid vague date');
+        }
+
+        return date;
+    }
+
+    function setEndOfDay (date) {
+        date.setHours(23);
+        date.setMinutes(59);
+        date.setSeconds(59);
+        date.setMilliseconds(999);
     }
 }());
 
