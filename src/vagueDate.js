@@ -23,6 +23,8 @@
     }
 
     function getVagueDate (options) {
+        // TODO: Refactor heavily.
+
         var units = normaliseUnits(options.units),
             now = Date.now(),
             from = {
