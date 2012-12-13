@@ -78,30 +78,7 @@ TODO
 ### Examples
 
 ```
-vagueDate.get({
-    from: 60,
-    to: 0
-}); // returns '1 minute ago'
-
-vagueDate.get({
-    from: 0,
-    to: 60
-}); // returns 'in 1 minute'
-
-vagueDate.get({
-    from: 7200,
-    to: 0
-}); // returns '2 hours ago'
-
-vagueDate.get({
-    from: 0,
-    to: 7200
-}); // returns 'in 2 hours'
-
-vagueDate.get({
-    from: Date.now(),
-    units: 'ms'
-}); // returns 'now'
+TODO
 ```
 
 ## Development
