@@ -1,0 +1,41 @@
+{
+    "name": "vague-date",
+    "version": "0.1.0",
+    "author": "Phil Booth <pmbooth@gmail.com>",
+    "description": "A tiny JavaScript library that formats precise time differences as a vague/fuzzy date, e.g. 'yesterday', 'just now' or 'next week'.",
+    "contributors": [
+        {
+            "name": "Phil Booth",
+            "email": "pmbooth@gmail.com"
+        }
+    ],
+    "main": "./src/vagueDate.js",
+    "repository": {
+        "type": "git",
+        "url": "https://github.com/philbooth/vagueDate.js"
+    },
+    "keywords": [
+        "time",
+        "date",
+        "fuzzy",
+        "vague",
+        "estimate",
+        "ender"
+    ],
+    "ender": "noop",
+    "jam": {
+        "main": "src/vagueDate.js"
+    },
+    "devDependencies": {
+        "jake": "0.5.x",
+        "jshint": "0.9.x",
+        "mocha": "1.7.x",
+        "chai": "1.4.x",
+        "uglify-js": "2.2.x"
+    },
+    "license": "MIT",
+    "scripts": {
+        "test": "jake test"
+    }
+}
+
