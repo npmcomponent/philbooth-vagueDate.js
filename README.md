@@ -71,7 +71,7 @@ Essentially, if `to` is less than `from` the returned vague date will
 indicate some point in the past. If `to` is greater than `from` it will
 indicate some point in the future.
 
-#### vagueDate.set (string)
+#### vagueDate.set (vagueDate)
 
 TODO
 
