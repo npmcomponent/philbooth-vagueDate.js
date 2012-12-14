@@ -321,6 +321,118 @@
                     vagueDate.set('foo');
                 });
             });
+
+            test('set returns date instance', function () {
+                assert.instanceOf(vagueDate.set('whenever'), Date);
+            });
+
+            test('set returns epoch when vague date is whenever', function () {
+                assert.strictEqual(vagueDate.set('whenever').getTime(), 0);
+            });
+
+            suite('set today:', function () {
+                var now, date;
+
+                setup(function () {
+                    now = new Date();
+                    date = vagueDate.set('today');
+                });
+
+                teardown(function () {
+                    now = date = undefined;
+                });
+
+                test('set returns current day', function () {
+                    assert.strictEqual(date.getDate(), now.getDate());
+                    assert.strictEqual(date.getMonth(), now.getMonth());
+                    assert.strictEqual(date.getYear(), now.getYear());
+                });
+
+                test('set returns end of day', function () {
+                    assert.strictEqual(date.getHours(), 23);
+                    assert.strictEqual(date.getMinutes(), 59);
+                    assert.strictEqual(date.getSeconds(), 59);
+                    assert.strictEqual(date.getMilliseconds(), 999);
+                });
+            });
+
+            suite('set yesterday:', function () {
+                var now, date;
+
+                setup(function () {
+                    now = new Date();
+                    date = vagueDate.set('yesterday');
+                });
+
+                teardown(function () {
+                    now = date = undefined;
+                });
+
+                test('set returns previous day', function () {
+                    if (now.getDate() === 1) {
+                        assert.isTrue(date.getDate() >= 28);
+
+                        if (now.getMonth() === 0) {
+                            assert.strictEqual(date.getMonth(), 11);
+                            assert.strictEqual(date.getYear(), now.getYear() - 1);
+                        } else {
+                            assert.strictEqual(date.getMonth(), now.getMonth() - 1);
+                            assert.strictEqual(date.getYear(), now.getYear());
+                        }
+                    } else {
+                        assert.strictEqual(date.getDate(), now.getDate() - 1);
+                        assert.strictEqual(date.getMonth(), now.getMonth());
+                        assert.strictEqual(date.getYear(), now.getYear());
+                    }
+                });
+
+                test('set returns end of day', function () {
+                    assert.strictEqual(date.getHours(), 23);
+                    assert.strictEqual(date.getMinutes(), 59);
+                    assert.strictEqual(date.getSeconds(), 59);
+                    assert.strictEqual(date.getMilliseconds(), 999);
+                });
+            });
+
+            suite('set tomorrow:', function () {
+                var now, date;
+
+                setup(function () {
+                    now = new Date();
+                    date = vagueDate.set('tomorrow');
+                });
+
+                teardown(function () {
+                    now = date = undefined;
+                });
+
+                test('set returns next day', function () {
+                    if (date.getDate() === 1) {
+                        assert.isTrue(now.getDate() >= 28);
+
+                        if (now.getMonth() === 11) {
+                            assert.strictEqual(date.getMonth(), 0);
+                            assert.strictEqual(date.getYear(), now.getYear() + 1);
+                        } else {
+                            assert.strictEqual(date.getMonth(), now.getMonth() + 1);
+                            assert.strictEqual(date.getYear(), now.getYear());
+                        }
+                    } else {
+                        assert.strictEqual(date.getDate(), now.getDate() + 1);
+                        assert.strictEqual(date.getMonth(), now.getMonth());
+                        assert.strictEqual(date.getYear(), now.getYear());
+                    }
+                });
+
+                test('set returns end of day', function () {
+                    assert.strictEqual(date.getHours(), 23);
+                    assert.strictEqual(date.getMinutes(), 59);
+                    assert.strictEqual(date.getSeconds(), 59);
+                    assert.strictEqual(date.getMilliseconds(), 999);
+                });
+            });
+
+            // TODO: More unit tests.
         });
     });
 
