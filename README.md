@@ -3,7 +3,7 @@
 A tiny JavaScript library
 that formats precise time differences
 as a vague/fuzzy date,
-e.g. 'yesterday', 'just now' or 'next week'.
+e.g. 'yesterday' or 'next week'.
 
 [![Build status][ci-image]][ci-status]
 
