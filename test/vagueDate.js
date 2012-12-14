@@ -287,6 +287,13 @@
                 }), 'now');
             });
 
+            test('get accepts date arguments', function () {
+                assert.strictEqual(vagueDate.get({
+                    from: new Date(1234567890),
+                    to: new Date(1234567890)
+                }), 'now');
+            });
+
             test('until defaults to now', function () {
                 assert.include(vagueDate.get({
                     to: Date.now()

@@ -54,7 +54,7 @@
             time = parseInt(time, 10);
         }
 
-        if (typeof time !== 'number' || isNaN(time)) {
+        if (isNotDate(time) && isNotTimestamp(time)) {
             throw new Error('Invalid timestamp');
         }
 
@@ -65,6 +65,22 @@
         return createTimeFrom(time);
     }
 
+    function isNotDate (date) {
+        return isDate(date) === false;
+    }
+
+    function isDate (date) {
+        return Object.prototype.toString.call(date) === "[object Date]" && isNaN(date.getTime()) === false;
+    }
+
+    function isNotTimestamp (timestamp) {
+        return isTimestamp(timestamp) === false;
+    }
+
+    function isTimestamp (timestamp) {
+        return typeof timestamp === 'number' && isNaN(timestamp) === false;
+    }
+
     function createTimeFrom (thing) {
         if (isDate(thing)) {
             return createTimeFromDate(thing);
@@ -73,10 +89,6 @@
         if (isTimestamp(thing)) {
             return createTimeFromTimestamp(thing);
         }
-    }
-
-    function isDate (date) {
-        return Object.prototype.toString.call(date) === "[object Date]";
     }
 
     function createTimeFromDate (date) {
@@ -90,10 +102,6 @@
             month: date.getMonth(),
             year: date.getYear()
         };
-    }
-
-    function isTimestamp (timestamp) {
-        return typeof timestamp === 'number' && isNaN(timestamp) === false;
     }
 
     function createTimeFromTimestamp (timestamp) {
