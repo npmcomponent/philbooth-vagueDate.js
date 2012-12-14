@@ -28,76 +28,9 @@
             from = normaliseTime(options.from, units, now),
             to = normaliseTime(options.to, units, now),
             difference = from.timestamp - to.timestamp,
-            absoluteDifference = Math.abs(difference),
-            years;
+            absoluteDifference = Math.abs(difference);
 
-        if (difference === 0) {
-            return 'now';
-        }
-
-        if (absoluteDifference < day * 2) {
-            if (from.day === to.day) {
-                return 'today';
-            }
-
-            if (areConsecutiveDaysOfWeek(from.day, to.day)) {
-                return 'tomorrow';
-            }
-
-            if (areConsecutiveDaysOfWeek(to.day, from.day)) {
-                return 'yesterday';
-            }
-        }
-
-        if (absoluteDifference < week) {
-            if (difference > 0 && from.day < to.day) {
-                return 'last week';
-            }
-
-            if (difference < 0 && from.day > to.day) {
-                return 'next week';
-            }
-
-            return 'this week';
-        }
-
-        if (absoluteDifference < week * 2) {
-            if (difference > 0 && from.day > to.day) {
-                return 'last week';
-            }
-
-            if (difference < 0 && from.day < to.day) {
-                return 'next week';
-            }
-        }
-
-        if (absoluteDifference < month * 2) {
-            if (from.month === to.month) {
-                return 'this month';
-            }
-
-            if (areConsecutiveMonthsOfYear(from.month, to.month)) {
-                return 'next month';
-            }
-
-            if (areConsecutiveMonthsOfYear(to.month, from.month)) {
-                return 'last month';
-            }
-        }
-
-        if (from.year === to.year) {
-            return 'this year';
-        }
-
-        if (from.year === to.year + 1) {
-            return 'last year';
-        }
-
-        if (from.year === to.year - 1) {
-            return 'next year';
-        }
-
-        return getYearlyDifference(absoluteDifference, difference);
+        return estimate(difference, absoluteDifference, from, to) || getYearlyDifference(absoluteDifference, difference);
     }
 
     function normaliseUnits (units) {
@@ -165,6 +98,74 @@
 
     function createTimeFromTimestamp (timestamp) {
         return createTime(timestamp, new Date(timestamp));
+    }
+
+    function estimate (difference, absoluteDifference, from, to) {
+        if (difference === 0) {
+            return 'now';
+        }
+
+        if (absoluteDifference < day * 2) {
+            if (from.day === to.day) {
+                return 'today';
+            }
+
+            if (areConsecutiveDaysOfWeek(from.day, to.day)) {
+                return 'tomorrow';
+            }
+
+            if (areConsecutiveDaysOfWeek(to.day, from.day)) {
+                return 'yesterday';
+            }
+        }
+
+        if (absoluteDifference < week) {
+            if (difference > 0 && from.day < to.day) {
+                return 'last week';
+            }
+
+            if (difference < 0 && from.day > to.day) {
+                return 'next week';
+            }
+
+            return 'this week';
+        }
+
+        if (absoluteDifference < week * 2) {
+            if (difference > 0 && from.day > to.day) {
+                return 'last week';
+            }
+
+            if (difference < 0 && from.day < to.day) {
+                return 'next week';
+            }
+        }
+
+        if (absoluteDifference < month * 2) {
+            if (from.month === to.month) {
+                return 'this month';
+            }
+
+            if (areConsecutiveMonthsOfYear(from.month, to.month)) {
+                return 'next month';
+            }
+
+            if (areConsecutiveMonthsOfYear(to.month, from.month)) {
+                return 'last month';
+            }
+        }
+
+        if (from.year === to.year) {
+            return 'this year';
+        }
+
+        if (from.year === to.year + 1) {
+            return 'last year';
+        }
+
+        if (from.year === to.year - 1) {
+            return 'next year';
+        }
     }
 
     function setVagueDate (vagueDate) {
