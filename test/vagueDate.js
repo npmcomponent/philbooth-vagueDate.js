@@ -295,15 +295,15 @@
             });
 
             test('until defaults to now', function () {
-                assert.include(vagueDate.get({
-                    to: Date.now()
-                }), 'now');
+                assert.strictEqual(vagueDate.get({
+                    to: Date.now() - 1
+                }), 'today');
             });
 
             test('from defaults to now', function () {
                 assert.include(vagueDate.get({
-                    to: Date.now()
-                }), 'now');
+                    to: Date.now() - 1
+                }), 'today');
             });
 
             test('set function is exported', function () {
