@@ -23,107 +23,81 @@
     }
 
     function getVagueDate (options) {
-        // TODO: Refactor heavily.
-
         var units = normaliseUnits(options.units),
             now = Date.now(),
-            from = {
-                timestamp: normaliseTimestamp(options.from, units, now)
-            },
-            to = {
-                timestamp: normaliseTimestamp(options.to, units, now)
-            },
+            from = normaliseTime(options.from, units, now),
+            to = normaliseTime(options.to, units, now),
             difference = from.timestamp - to.timestamp,
+            absoluteDifference = Math.abs(difference),
             years;
-
-        from.date = new Date(from.timestamp);
-        to.date = new Date(to.timestamp);
 
         if (difference === 0) {
             return 'now';
         }
 
-        if (Math.abs(difference) < day * 2) {
-            if (from.date.getDay() === to.date.getDay()) {
+        if (absoluteDifference < day * 2) {
+            if (from.day === to.day) {
                 return 'today';
             }
 
-            if (
-                from.date.getDay() === to.date.getDay() + 1 ||
-                (from.date.getDay() === 0 && to.date.getDay() === 6)
-            ) {
-                return 'yesterday';
+            if (areConsecutiveDaysOfWeek(from.day, to.day)) {
+                return 'tomorrow';
             }
 
-            if (
-                from.date.getDay() === to.date.getDay() - 1 ||
-                (from.date.getDay() === 6 && to.date.getDay() === 0)
-            ) {
-                return 'tomorrow';
+            if (areConsecutiveDaysOfWeek(to.day, from.day)) {
+                return 'yesterday';
             }
         }
 
-        if (Math.abs(difference) < week) {
-            if (difference > 0 && from.date.getDay() < to.date.getDay()) {
+        if (absoluteDifference < week) {
+            if (difference > 0 && from.day < to.day) {
                 return 'last week';
             }
 
-            if (difference < 0 && from.date.getDay() > to.date.getDay()) {
+            if (difference < 0 && from.day > to.day) {
                 return 'next week';
             }
 
             return 'this week';
         }
 
-        if (Math.abs(difference) < week * 2) {
-            if (difference > 0 && from.date.getDay() > to.date.getDay()) {
+        if (absoluteDifference < week * 2) {
+            if (difference > 0 && from.day > to.day) {
                 return 'last week';
             }
 
-            if (difference < 0 && from.date.getDay() < to.date.getDay()) {
+            if (difference < 0 && from.day < to.day) {
                 return 'next week';
             }
         }
 
-        if (Math.abs(difference) < month * 2) {
-            if (from.date.getMonth() === to.date.getMonth()) {
+        if (absoluteDifference < month * 2) {
+            if (from.month === to.month) {
                 return 'this month';
             }
 
-            if (
-                from.date.getMonth() === to.date.getMonth() + 1 ||
-                (from.date.getMonth() === 0 && to.date.getMonth() === 11)
-            ) {
-                return 'last month';
+            if (areConsecutiveMonthsOfYear(from.month, to.month)) {
+                return 'next month';
             }
 
-            if (
-                from.date.getMonth() === to.date.getMonth() - 1 ||
-                (from.date.getMonth() === 11 && to.date.getMonth() === 0)
-            ) {
-                return 'next month';
+            if (areConsecutiveMonthsOfYear(to.month, from.month)) {
+                return 'last month';
             }
         }
 
-        if (from.date.getYear() === to.date.getYear()) {
+        if (from.year === to.year) {
             return 'this year';
         }
 
-        if (from.date.getYear() === to.date.getYear() + 1) {
+        if (from.year === to.year + 1) {
             return 'last year';
         }
 
-        if (from.date.getYear() === to.date.getYear() - 1) {
+        if (from.year === to.year - 1) {
             return 'next year';
         }
 
-        years = Math.floor(Math.abs(difference) / year);
-
-        if (difference < 0) {
-            return 'in ' + years + ' years';
-        }
-
-        return years + ' years ago';
+        return getYearlyDifference(absoluteDifference, difference);
     }
 
     function normaliseUnits (units) {
@@ -138,9 +112,9 @@
         throw new Error('Invalid units');
     }
 
-    function normaliseTimestamp (time, units, defaultTime) {
+    function normaliseTime (time, units, defaultTime) {
         if (typeof time === 'undefined') {
-            return defaultTime;
+            return createTimeFrom(defaultTime);
         }
 
         if (typeof time === 'string') {
@@ -152,10 +126,45 @@
         }
 
         if (units === 's') {
-            return time * 1000;
+            return createTimeFrom(time * 1000);
         }
 
-        return time;
+        return createTimeFrom(time);
+    }
+
+    function createTimeFrom (thing) {
+        if (isDate(thing)) {
+            return createTimeFromDate(thing);
+        }
+
+        if (isTimestamp(thing)) {
+            return createTimeFromTimestamp(thing);
+        }
+    }
+
+    function isDate (date) {
+        return Object.prototype.toString.call(date) === "[object Date]";
+    }
+
+    function createTimeFromDate (date) {
+        return createTime(date.getTime(), date);
+    }
+
+    function createTime (timestamp, date) {
+        return {
+            timestamp: timestamp,
+            day: date.getDay(),
+            month: date.getMonth(),
+            year: date.getYear()
+        };
+    }
+
+    function isTimestamp (timestamp) {
+        return typeof timestamp === 'number' && isNaN(timestamp) === false;
+    }
+
+    function createTimeFromTimestamp (timestamp) {
+        return createTime(timestamp, new Date(timestamp));
     }
 
     function setVagueDate (vagueDate) {
@@ -208,6 +217,28 @@
         date.setMinutes(59);
         date.setSeconds(59);
         date.setMilliseconds(999);
+    }
+
+    function areConsecutiveDaysOfWeek (first, second) {
+        return areConsecutive(first, second, 6);
+    }
+
+    function areConsecutive (lesser, greater, maximum) {
+        return lesser === greater - 1 || (lesser === maximum && greater === 0);
+    }
+
+    function areConsecutiveMonthsOfYear (first, second) {
+        return areConsecutive(first, second, 11);
+    }
+
+    function getYearlyDifference(absoluteDifference, difference) {
+        var years = Math.floor(absoluteDifference / year);
+
+        if (difference < 0) {
+            return 'in ' + years + ' years';
+        }
+
+        return years + ' years ago';
     }
 }());
 
