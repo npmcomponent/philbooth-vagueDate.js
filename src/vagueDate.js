@@ -17,6 +17,7 @@
 
     cardinalities = {
         day: 7,
+        week: 52,
         month: 12
     },
 
@@ -51,7 +52,7 @@
             difference = from.timestamp - to.timestamp,
             absoluteDifference = Math.abs(difference);
 
-        return estimate(difference, absoluteDifference, from, to) || getYearlyDifference(absoluteDifference, difference);
+        return estimate(absoluteDifference, from, to) || getYearlyDifference(absoluteDifference, difference);
     }
 
     function normaliseUnits (units) {
@@ -120,23 +121,35 @@
         return {
             timestamp: timestamp,
             day: date.getDay(),
+            week: getWeek(date),
             month: date.getMonth(),
             year: date.getYear()
         };
+    }
+
+    function getWeek (date) {
+        var rollover = 0,
+            yearStart = new Date(date.getFullYear(), 0, 1);
+
+        if (yearStart.getDay() > date.getDay()) {
+            rollover = 1;
+        }
+
+        return Math.floor((date.getTime() - yearStart.getTime()) / times.week) + rollover - 1;
     }
 
     function createTimeFromTimestamp (timestamp) {
         return createTime(timestamp, new Date(timestamp));
     }
 
-    function estimate (difference, absoluteDifference, from, to) {
+    function estimate (difference, from, to) {
         if (difference === 0) {
             return 'now';
         }
 
-        return estimateDay(absoluteDifference, from, to) ||
-            estimateWeek(difference, absoluteDifference, from, to) ||
-            estimateMonth(absoluteDifference, from, to) ||
+        return estimateDay(difference, from, to) ||
+            estimateWeek(difference, from, to) ||
+            estimateMonth(difference, from, to) ||
             estimateYear(from, to);
     }
 
@@ -164,33 +177,16 @@
         return lesser === greater - 1 || (lesser === cardinality - 1 && greater === 0);
     }
 
-    function estimateWeek (difference, absoluteDifference, from, to) {
-        // TODO: Set .week on from and to then re-use estimatePeriod?
-        if (absoluteDifference < times.week) {
-            if (difference > 0 && from.day < to.day) {
-                return 'last week';
-            }
+    function estimateWeek (difference, from, to) {
+        return estimateUniformPeriod(difference, 'week', from, to);
+    }
 
-            if (difference < 0 && from.day > to.day) {
-                return 'next week';
-            }
-
-            return 'this week';
-        }
-
-        if (absoluteDifference < times.week * 2) {
-            if (difference > 0 && from.day > to.day) {
-                return 'last week';
-            }
-
-            if (difference < 0 && from.day < to.day) {
-                return 'next week';
-            }
-        }
+    function estimateUniformPeriod (difference, period, from, to) {
+        return estimatePeriod(difference, period, from, to, 'this ' + period, 'next ' + period, 'last ' + period);
     }
 
     function estimateMonth (difference, from, to) {
-        return estimatePeriod(difference, 'month', from, to, 'this month', 'next month', 'last month');
+        return estimateUniformPeriod(difference, 'month', from, to);
     }
 
     function estimateYear (from, to) {
