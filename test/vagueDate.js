@@ -289,9 +289,9 @@
 
             test('get accepts date arguments', function () {
                 assert.strictEqual(vagueDate.get({
-                    from: new Date(1234567890),
-                    to: new Date(1234567890)
-                }), 'now');
+                    from: new Date(2013, 0, 1),
+                    to: new Date(2012, 11, 31)
+                }), 'yesterday');
             });
 
             test('get ignores units when arguments are dates', function () {
