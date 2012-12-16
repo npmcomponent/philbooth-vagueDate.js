@@ -77,7 +77,7 @@
         }
 
         if (isNotDate(time) && isNotTimestamp(time)) {
-            throw new Error('Invalid timestamp');
+            throw new Error('Invalid time');
         }
 
         if (typeof time === 'number' && units === 's') {
