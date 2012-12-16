@@ -1,5 +1,7 @@
 # vagueDate.js
 
+[![Build status][ci-image]][ci-status]
+
 A tiny JavaScript library
 that formats precise time differences
 as a vague/fuzzy date,
@@ -8,8 +10,6 @@ e.g. 'yesterday', 'today' or 'next week'.
 If this isn't quite what you're looking for,
 you may be interested in vagueDate's little sister,
 [vagueTime.js][vague-time].
-
-[![Build status][ci-image]][ci-status]
 
 ## Installation
 
