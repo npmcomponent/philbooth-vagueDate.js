@@ -30,11 +30,11 @@ git clone git@github.com:philbooth/vagueDate.js.git
 
 Or use one of the growing number of package managers, such as
 [Jam],
-[Ender]
+[Ender][ender]
 (the package name for both is 'vague-date'),
-[Bower]
+[Bower][bower]
 ('vagueDate.js')
-or [Component]
+or [Component][component]
 ('philbooth/vagueDate.js').
 
 ## Usage
