@@ -80,7 +80,7 @@
         }
 
         if (typeof time === 'number' && units === 's') {
-            return createTimeFrom(time * 1000);
+            time *= 1000;
         }
 
         return createTimeFrom(time);
