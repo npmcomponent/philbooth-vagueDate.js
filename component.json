@@ -1,7 +1,7 @@
 {
     "name": "vagueDate.js",
     "repo": "philbooth/vagueDate.js",
-    "version": "0.1.1",
+    "version": "0.1.2",
     "author": "Phil Booth <pmbooth@gmail.com>",
     "description": "A tiny JavaScript library that formats precise time differences as a vague/fuzzy date, e.g. 'yesterday', 'today' or 'next week'.",
     "contributors": {
