@@ -176,6 +176,28 @@
         }
     }
 
+    function areConsecutiveDaysOfWeek (first, second) {
+        return areConsecutive(first, second, 6);
+    }
+
+    function areConsecutive (lesser, greater, maximum) {
+        return lesser === greater - 1 || (lesser === maximum && greater === 0);
+    }
+
+    function areConsecutiveMonthsOfYear (first, second) {
+        return areConsecutive(first, second, 11);
+    }
+
+    function getYearlyDifference(absoluteDifference, difference) {
+        var years = Math.floor(absoluteDifference / year);
+
+        if (difference < 0) {
+            return 'in ' + years + ' years';
+        }
+
+        return years + ' years ago';
+    }
+
     function setVagueDate (vagueDate) {
         // TODO: Give this function some thought.
 
@@ -234,28 +256,6 @@
         date.setMinutes(59);
         date.setSeconds(59);
         date.setMilliseconds(999);
-    }
-
-    function areConsecutiveDaysOfWeek (first, second) {
-        return areConsecutive(first, second, 6);
-    }
-
-    function areConsecutive (lesser, greater, maximum) {
-        return lesser === greater - 1 || (lesser === maximum && greater === 0);
-    }
-
-    function areConsecutiveMonthsOfYear (first, second) {
-        return areConsecutive(first, second, 11);
-    }
-
-    function getYearlyDifference(absoluteDifference, difference) {
-        var years = Math.floor(absoluteDifference / year);
-
-        if (difference < 0) {
-            return 'in ' + years + ' years';
-        }
-
-        return years + ' years ago';
     }
 }());
 
