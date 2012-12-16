@@ -165,6 +165,7 @@
     }
 
     function estimateWeek (difference, absoluteDifference, from, to) {
+        // TODO: Set .week on from and to then re-use estimatePeriod?
         if (absoluteDifference < times.week) {
             if (difference > 0 && from.day < to.day) {
                 return 'last week';
