@@ -8,18 +8,22 @@
 (function () {
     'use strict';
 
-    var functions = {
-        get: getVagueDate,
-        set: setVagueDate
+    var times = {
+        day: 86400000, // 1000 ms * 60 s * 60 m * 24 h
+        week: 604800000, // 1000 ms * 60 s * 60 m * 24 h * 7 d
+        month: 2678400000, // 1000 ms * 60 s * 60 m * 24 h * 31 d
+        year: 31536000000 // 1000 ms * 60 s * 60 m * 24 h * 365 d
     },
 
-    second = 1000,
-    minute = second * 60,
-    hour = minute * 60,
-    day = hour * 24,
-    week = day * 7,
-    month = day * 31,
-    year = day * 365;
+    cardinalities = {
+        day: 7,
+        month: 12
+    },
+
+    functions = {
+        get: getVagueDate,
+        set: setVagueDate
+    };
 
     if (typeof module === 'undefined' || module === null) {
         window.vagueDate = functions;
@@ -130,21 +134,38 @@
             return 'now';
         }
 
-        if (absoluteDifference < day * 2) {
-            if (from.day === to.day) {
-                return 'today';
+        return estimateDay(absoluteDifference, from, to) ||
+            estimateWeek(difference, absoluteDifference, from, to) ||
+            estimateMonth(absoluteDifference, from, to) ||
+            estimateYear(from, to);
+    }
+
+    function estimateDay (difference, from, to) {
+        return estimatePeriod(difference, 'day', from, to, 'today', 'tomorrow', 'yesterday');
+    }
+
+    function estimatePeriod (difference, period, from, to, current, next, previous) {
+        if (difference < times[period] * 2) {
+            if (from[period] === to[period]) {
+                return current;
             }
 
-            if (areConsecutiveDaysOfWeek(from.day, to.day)) {
-                return 'tomorrow';
+            if (areConsecutive(from[period], to[period], cardinalities[period])) {
+                return next;
             }
 
-            if (areConsecutiveDaysOfWeek(to.day, from.day)) {
-                return 'yesterday';
+            if (areConsecutive(to[period], from[period], cardinalities[period])) {
+                return previous;
             }
         }
+    }
 
-        if (absoluteDifference < week) {
+    function areConsecutive (lesser, greater, cardinality) {
+        return lesser === greater - 1 || (lesser === cardinality - 1 && greater === 0);
+    }
+
+    function estimateWeek (difference, absoluteDifference, from, to) {
+        if (absoluteDifference < times.week) {
             if (difference > 0 && from.day < to.day) {
                 return 'last week';
             }
@@ -156,7 +177,7 @@
             return 'this week';
         }
 
-        if (absoluteDifference < week * 2) {
+        if (absoluteDifference < times.week * 2) {
             if (difference > 0 && from.day > to.day) {
                 return 'last week';
             }
@@ -165,21 +186,13 @@
                 return 'next week';
             }
         }
+    }
 
-        if (absoluteDifference < month * 2) {
-            if (from.month === to.month) {
-                return 'this month';
-            }
+    function estimateMonth (difference, from, to) {
+        return estimatePeriod(difference, 'month', from, to, 'this month', 'next month', 'last month');
+    }
 
-            if (areConsecutiveMonthsOfYear(from.month, to.month)) {
-                return 'next month';
-            }
-
-            if (areConsecutiveMonthsOfYear(to.month, from.month)) {
-                return 'last month';
-            }
-        }
-
+    function estimateYear (from, to) {
         if (from.year === to.year) {
             return 'this year';
         }
@@ -193,20 +206,8 @@
         }
     }
 
-    function areConsecutiveDaysOfWeek (first, second) {
-        return areConsecutive(first, second, 6);
-    }
-
-    function areConsecutive (lesser, greater, maximum) {
-        return lesser === greater - 1 || (lesser === maximum && greater === 0);
-    }
-
-    function areConsecutiveMonthsOfYear (first, second) {
-        return areConsecutive(first, second, 11);
-    }
-
     function getYearlyDifference(absoluteDifference, difference) {
-        var years = Math.floor(absoluteDifference / year);
+        var years = Math.floor(absoluteDifference / times.year);
 
         if (difference < 0) {
             return 'in ' + years + ' years';

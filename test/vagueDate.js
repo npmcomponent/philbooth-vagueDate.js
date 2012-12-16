@@ -265,7 +265,7 @@
                 }), '2 years ago');
             });
 
-            test('get returns next year when time is in 2 years', function () {
+            test('get returns in 2 years when time is in 2 years', function () {
                 assert.strictEqual(vagueDate.get({
                     from: timestamp(2011, 1, 1, 0, 0, 0),
                     to: timestamp(2013, 1, 1, 0, 0, 0)
