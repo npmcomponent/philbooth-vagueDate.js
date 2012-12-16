@@ -5,6 +5,10 @@ that formats precise time differences
 as a vague/fuzzy date,
 e.g. 'yesterday', 'today' or 'next week'.
 
+If this isn't quite what you're after,
+you may be interested in vagueDate's little sister,
+[vagueTime.js][vague-time]
+
 [![Build status][ci-image]][ci-status]
 
 ## Installation
@@ -25,10 +29,10 @@ git clone git@github.com:philbooth/vagueDate.js.git
 ```
 
 Or use one of the growing number of package managers, such as
-[Jam][jam],
-[Ender][ender] (the package name for both is 'vague-date'),
-[Bower][bower] ('vagueDate.js')
-or [Component][component] ('philbooth/vagueDate.js').
+[Jam],
+[Ender] (the package name for both is 'vague-date'),
+[Bower] ('vagueDate.js')
+or [Component] ('philbooth/vagueDate.js').
 
 ## Usage
 
@@ -123,6 +127,7 @@ You can run them with the command `npm test` or `jake test`.
 
 [ci-image]: https://secure.travis-ci.org/philbooth/vagueDate.js.png?branch=master
 [ci-status]: http://travis-ci.org/#!/philbooth/vagueDate.js
+[vague-time]: https://github.com/philbooth/vagueTime.js
 [jam]: http://jamjs.org/
 [component]: https://github.com/component/component
 [ender]: https://github.com/ender-js/Ender
