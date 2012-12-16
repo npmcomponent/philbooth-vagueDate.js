@@ -294,6 +294,14 @@
                 }), 'now');
             });
 
+            test('get ignores units when arguments are dates', function () {
+                assert.strictEqual(vagueDate.get({
+                    from: new Date(2012, 11, 16, 23, 59, 59),
+                    to: new Date(2012, 11, 15),
+                    units: 's'
+                }), 'yesterday');
+            });
+
             test('until defaults to now', function () {
                 assert.strictEqual(vagueDate.get({
                     to: Date.now() - 1

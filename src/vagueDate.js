@@ -79,7 +79,7 @@
             throw new Error('Invalid timestamp');
         }
 
-        if (units === 's') {
+        if (typeof time === 'number' && units === 's') {
             return createTimeFrom(time * 1000);
         }
 
