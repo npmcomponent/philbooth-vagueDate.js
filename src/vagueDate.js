@@ -1,3 +1,8 @@
+/**
+ * This module exports function for creating and consuming
+ * vague dates, e.g. 'yesterday', 'today' or 'next week'.
+ */
+
 /*globals module, window */
 
 (function () {
@@ -22,6 +27,18 @@
         module.exports = functions;
     }
 
+    /**
+     * Public function `get`.
+     *
+     * Returns a vague date string.
+     *
+     * @option [from] {Date}    The origin time. Defaults to `Date.now()`.
+     * @option [to] {Date}      The target time. Defaults to `Date.now()`.
+     * @option [units] {string} If `from` or `to` are timestamps instead of date instances,
+     *                          this indicates the units that they're measured in. Can be
+     *                          either `ms` for milliseconds or `s` for seconds. Defaults to
+     *                          `ms`.
+     */
     function getVagueDate (options) {
         var units = normaliseUnits(options.units),
             now = Date.now(),
@@ -198,6 +215,13 @@
         return years + ' years ago';
     }
 
+    /**
+     * Public function `set`.
+     *
+     * Returns a date instance representing a vague date.
+     *
+     * @param vagueDate {string} The vague date.
+     */
     function setVagueDate (vagueDate) {
         // TODO: Give this function some thought.
 
