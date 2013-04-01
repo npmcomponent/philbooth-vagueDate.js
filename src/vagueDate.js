@@ -1,6 +1,6 @@
-/*globals module, window */
+/*globals define, module */
 
-(function () {
+(function (globals) {
     'use strict';
 
     var functions = {
@@ -16,11 +16,7 @@
     month = day * 31,
     year = day * 365;
 
-    if (typeof module === 'undefined' || module === null) {
-        window.vagueDate = functions;
-    } else {
-        module.exports = functions;
-    }
+    exportFunctions();
 
     function getVagueDate (options) {
         var units = normaliseUnits(options.units),
@@ -249,5 +245,17 @@
 
         return years + ' years ago';
     }
-}());
+
+    function exportFunctions () {
+        if (typeof define === 'function' && define.amd) {
+            define(function () {
+                return functions;
+            });
+        } else if (typeof module === 'object' || module !== null) {
+            module.exports = functions;
+        } else {
+            globals.vagueDate = functions;
+        }
+    }
+}(this));
 
