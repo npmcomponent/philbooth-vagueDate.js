@@ -9,42 +9,40 @@ e.g. 'yesterday' or 'next week'.
 
 ## Installation
 
-### Node.js
+### Via NPM
 
 ```
 npm install vague-date
 ```
 
-### Browser
+### Via Jam
 
-To use vagueDate.js in a browser environment, you can
-either clone the git repository like so:
+```
+jam install vague-date
+```
+
+### Via Git
 
 ```
 git clone git@github.com:philbooth/vagueDate.js.git
 ```
 
-Or use one of the growing number of package managers, such as
-[Jam][jam],
-[Ender][ender] (the package name for both is 'vague-date'),
-[Bower][bower] ('vagueDate.js')
-or [Component][component] ('philbooth/vagueDate.js').
-
 ## Usage
 
 ### Loading the library
 
-#### Node.js
-
-```
-var vagueDate = require('vague-date');
-```
-
-#### Browser
-
-```
-<script type="text/javascript" src=".../vagueDate.js/src/vagueDate.min.js"></script>
-```
+Both
+CommonJS
+(e.g.
+if you're running on [Node.js][node]
+or in the browser with [Browserify])
+and AMD
+(e.g. if you're using [Require.js][require])
+loading styles are supported.
+If neither system is detected,
+the library defaults to
+exporting it's interface globally
+as `vagueDate`.
 
 ### Calling the library
 
@@ -86,7 +84,7 @@ TODO
 ### Dependencies
 
 The build environment relies on
-[Node.js][node],
+Node.js,
 [NPM],
 [Jake],
 [JSHint],
@@ -104,11 +102,9 @@ You can run them with the command `npm test` or `jake test`.
 
 [ci-image]: https://secure.travis-ci.org/philbooth/vagueDate.js.png?branch=master
 [ci-status]: http://travis-ci.org/#!/philbooth/vagueDate.js
-[jam]: http://jamjs.org/
-[component]: https://github.com/component/component
-[ender]: https://github.com/ender-js/Ender
-[bower]: https://github.com/twitter/bower
 [node]: http://nodejs.org/
+[browserify]: http://browserify.org/
+[require]: http://requirejs.org/
 [npm]: https://npmjs.org/
 [jake]: https://github.com/mde/jake
 [jshint]: https://github.com/jshint/node-jshint
