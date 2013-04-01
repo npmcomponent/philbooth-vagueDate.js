@@ -1,23 +1,45 @@
+/**
+ * This module exports function for creating and consuming
+ * vague dates, e.g. 'yesterday', 'today' or 'next week'.
+ */
+
 /*globals define, module */
 
 (function (globals) {
     'use strict';
 
-    var functions = {
-        get: getVagueDate,
-        set: setVagueDate
+    var times = {
+        day: 86400000, // 1000 ms * 60 s * 60 m * 24 h
+        week: 604800000, // 1000 ms * 60 s * 60 m * 24 h * 7 d
+        month: 2678400000, // 1000 ms * 60 s * 60 m * 24 h * 31 d
+        year: 31536000000 // 1000 ms * 60 s * 60 m * 24 h * 365 d
     },
 
-    second = 1000,
-    minute = second * 60,
-    hour = minute * 60,
-    day = hour * 24,
-    week = day * 7,
-    month = day * 31,
-    year = day * 365;
+    cardinalities = {
+        day: 7,
+        week: 52,
+        month: 12
+    },
+
+    functions = {
+        get: getVagueDate,
+        set: setVagueDate
+    };
 
     exportFunctions();
 
+    /**
+     * Public function `get`.
+     *
+     * Returns a vague date string.
+     *
+     * @option [from] {Date}    The origin time. Defaults to `Date.now()`.
+     * @option [to] {Date}      The target time. Defaults to `Date.now()`.
+     * @option [units] {string} If `from` or `to` are timestamps instead of date instances,
+     *                          this indicates the units that they're measured in. Can be
+     *                          either `ms` for milliseconds or `s` for seconds. Defaults to
+     *                          `ms`.
+     */
     function getVagueDate (options) {
         var units = normaliseUnits(options.units),
             now = Date.now(),
@@ -26,7 +48,7 @@
             difference = from.timestamp - to.timestamp,
             absoluteDifference = Math.abs(difference);
 
-        return estimate(difference, absoluteDifference, from, to) || getYearlyDifference(absoluteDifference, difference);
+        return estimate(absoluteDifference, from, to) || getYearlyDifference(absoluteDifference, difference);
     }
 
     function normaliseUnits (units) {
@@ -51,11 +73,11 @@
         }
 
         if (isNotDate(time) && isNotTimestamp(time)) {
-            throw new Error('Invalid timestamp');
+            throw new Error('Invalid time');
         }
 
-        if (units === 's') {
-            return createTimeFrom(time * 1000);
+        if (typeof time === 'number' && units === 's') {
+            time *= 1000;
         }
 
         return createTimeFrom(time);
@@ -95,70 +117,75 @@
         return {
             timestamp: timestamp,
             day: date.getDay(),
+            week: getWeek(date),
             month: date.getMonth(),
             year: date.getYear()
         };
+    }
+
+    function getWeek (date) {
+        var rollover = 0,
+            yearStart = new Date(date.getFullYear(), 0, 1);
+
+        if (yearStart.getDay() > date.getDay()) {
+            rollover = 1;
+        }
+
+        return Math.floor((date.getTime() - yearStart.getTime()) / times.week) + rollover - 1;
     }
 
     function createTimeFromTimestamp (timestamp) {
         return createTime(timestamp, new Date(timestamp));
     }
 
-    function estimate (difference, absoluteDifference, from, to) {
+    function estimate (difference, from, to) {
         if (difference === 0) {
             return 'now';
         }
 
-        if (absoluteDifference < day * 2) {
-            if (from.day === to.day) {
-                return 'today';
+        return estimateDay(difference, from, to) ||
+            estimateWeek(difference, from, to) ||
+            estimateMonth(difference, from, to) ||
+            estimateYear(from, to);
+    }
+
+    function estimateDay (difference, from, to) {
+        return estimatePeriod(difference, 'day', from, to, 'today', 'tomorrow', 'yesterday');
+    }
+
+    function estimatePeriod (difference, period, from, to, current, next, previous) {
+        if (difference < times[period] * 2) {
+            if (from[period] === to[period]) {
+                return current;
             }
 
-            if (areConsecutiveDaysOfWeek(from.day, to.day)) {
-                return 'tomorrow';
+            if (areConsecutive(from[period], to[period], cardinalities[period])) {
+                return next;
             }
 
-            if (areConsecutiveDaysOfWeek(to.day, from.day)) {
-                return 'yesterday';
-            }
-        }
-
-        if (absoluteDifference < week) {
-            if (difference > 0 && from.day < to.day) {
-                return 'last week';
-            }
-
-            if (difference < 0 && from.day > to.day) {
-                return 'next week';
-            }
-
-            return 'this week';
-        }
-
-        if (absoluteDifference < week * 2) {
-            if (difference > 0 && from.day > to.day) {
-                return 'last week';
-            }
-
-            if (difference < 0 && from.day < to.day) {
-                return 'next week';
+            if (areConsecutive(to[period], from[period], cardinalities[period])) {
+                return previous;
             }
         }
+    }
 
-        if (absoluteDifference < month * 2) {
-            if (from.month === to.month) {
-                return 'this month';
-            }
+    function areConsecutive (lesser, greater, cardinality) {
+        return lesser === greater - 1 || (lesser === cardinality - 1 && greater === 0);
+    }
 
-            if (areConsecutiveMonthsOfYear(from.month, to.month)) {
-                return 'next month';
-            }
+    function estimateWeek (difference, from, to) {
+        return estimateUniformPeriod(difference, 'week', from, to);
+    }
 
-            if (areConsecutiveMonthsOfYear(to.month, from.month)) {
-                return 'last month';
-            }
-        }
+    function estimateUniformPeriod (difference, period, from, to) {
+        return estimatePeriod(difference, period, from, to, 'this ' + period, 'next ' + period, 'last ' + period);
+    }
 
+    function estimateMonth (difference, from, to) {
+        return estimateUniformPeriod(difference, 'month', from, to);
+    }
+
+    function estimateYear (from, to) {
         if (from.year === to.year) {
             return 'this year';
         }
@@ -172,7 +199,26 @@
         }
     }
 
+    function getYearlyDifference(absoluteDifference, difference) {
+        var years = Math.floor(absoluteDifference / times.year);
+
+        if (difference < 0) {
+            return 'in ' + years + ' years';
+        }
+
+        return years + ' years ago';
+    }
+
+    /**
+     * Public function `set`.
+     *
+     * Returns a date instance representing a vague date.
+     *
+     * @param vagueDate {string} The vague date.
+     */
     function setVagueDate (vagueDate) {
+        // TODO: Give this function some thought.
+
         var date = new Date();
 
         switch (vagueDate) {
@@ -190,25 +236,31 @@
                 setEndOfDay(date);
                 break;
             case 'last week':
+                date.setDate(date.getDate() - 7);
                 setEndOfDay(date);
                 break;
             case 'next week':
+                date.setDate(date.getDate() + 7);
                 setEndOfDay(date);
                 break;
             case 'last month':
+                date.setMonth(date.getMonth() - 1);
                 setEndOfDay(date);
                 break;
             case 'next month':
+                date.setMonth(date.getMonth() + 1);
                 setEndOfDay(date);
                 break;
             case 'last year':
+                date.setYear(date.getYear() - 1);
                 setEndOfDay(date);
                 break;
             case 'next year':
+                date.setYear(date.getYear() + 1);
                 setEndOfDay(date);
                 break;
             case 'whenever':
-                setEndOfDay(date);
+                date = new Date(0);
                 break;
             default:
                 throw new Error('Invalid vague date');
@@ -222,28 +274,6 @@
         date.setMinutes(59);
         date.setSeconds(59);
         date.setMilliseconds(999);
-    }
-
-    function areConsecutiveDaysOfWeek (first, second) {
-        return areConsecutive(first, second, 6);
-    }
-
-    function areConsecutive (lesser, greater, maximum) {
-        return lesser === greater - 1 || (lesser === maximum && greater === 0);
-    }
-
-    function areConsecutiveMonthsOfYear (first, second) {
-        return areConsecutive(first, second, 11);
-    }
-
-    function getYearlyDifference(absoluteDifference, difference) {
-        var years = Math.floor(absoluteDifference / year);
-
-        if (difference < 0) {
-            return 'in ' + years + ' years';
-        }
-
-        return years + ' years ago';
     }
 
     function exportFunctions () {
