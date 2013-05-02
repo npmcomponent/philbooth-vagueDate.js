@@ -1,6 +1,6 @@
 {
     "name": "vague-date",
-    "version": "0.1.3",
+    "version": "0.1.4",
     "author": "Phil Booth <pmbooth@gmail.com>",
     "description": "A tiny JavaScript library that formats precise time differences as a vague/fuzzy date, e.g. 'yesterday', 'today' or 'next week'.",
     "contributors": [
