@@ -10,6 +10,16 @@ e.g. 'yesterday', 'today' or 'next week'.
 If this project isn't quite what you're looking for,
 you may be interested in vagueDate's little sister,
 [vagueTime.js][vague-time].
+Or if you would like
+to parse vague date strings
+rather than generate them,
+you should try
+Matthew Mueller's [date]
+or Tim Wood's [moment].
+
+## License
+
+[MIT][license]
 
 ## Installation
 
@@ -128,6 +138,9 @@ open `test/vagueDate.html`.
 [ci-image]: https://secure.travis-ci.org/philbooth/vagueDate.js.png?branch=master
 [ci-status]: http://travis-ci.org/#!/philbooth/vagueDate.js
 [vague-time]: https://github.com/philbooth/vagueTime.js
+[date]: https://github.com/MatthewMueller/date
+[moment]: https://github.com/timrwood/moment
+[license]: https://github.com/philbooth/vagueDate.js/blob/master/COPYING
 [node]: http://nodejs.org/
 [browserify]: http://browserify.org/
 [require]: http://requirejs.org/
