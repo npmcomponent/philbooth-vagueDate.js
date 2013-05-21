@@ -60,11 +60,8 @@ as `vagueDate`.
 
 ### Calling the library
 
-vagueDate.js exports two public functions, `get` and `set`.
-
-#### vagueDate.get (options)
-
-Returns a vague date string
+vagueDate.js exports a single public function, `get`,
+which returns a vague date string
 based on the argument(s) that you pass it.
 
 The arguments are passed as properties on a single options object.
@@ -86,16 +83,6 @@ Essentially, if `to` is less than `from` the returned vague date will
 indicate some point in the past. If `to` is greater than `from` it will
 indicate some point in the future.
 
-#### vagueDate.set (vagueDate)
-
-Returns an instance of `Date`,
-set according to the vague date string that is passed to it.
-The returned date object
-will always be set to the time of 23:59:59.999
-for the day in question,
-unless the vague date 'now' is specified,
-in which case the returned object will represent the current date and time.
-
 ### Examples
 
 ```
@@ -108,8 +95,6 @@ vagueDate.get({
 	from: new Date(2013, 0, 1),
 	to: new Date(2013, 0, 2)
 }); // Returns 'tomorrow'
-
-vagueTime.set('today'); // Returns date object representing today at 23:59:59.999
 ```
 
 ## Development
