@@ -22,8 +22,7 @@
     },
 
     functions = {
-        get: getVagueDate,
-        set: setVagueDate
+        get: getVagueDate
     };
 
     exportFunctions();
@@ -139,10 +138,6 @@
     }
 
     function estimate (difference, from, to) {
-        if (difference === 0) {
-            return 'now';
-        }
-
         return estimateDay(difference, from, to) ||
             estimateWeek(difference, from, to) ||
             estimateMonth(difference, from, to) ||
@@ -207,73 +202,6 @@
         }
 
         return years + ' years ago';
-    }
-
-    /**
-     * Public function `set`.
-     *
-     * Returns a date instance representing a vague date.
-     *
-     * @param vagueDate {string} The vague date.
-     */
-    function setVagueDate (vagueDate) {
-        // TODO: Give this function some thought.
-
-        var date = new Date();
-
-        switch (vagueDate) {
-            case 'now':
-                break;
-            case 'today':
-                setEndOfDay(date);
-                break;
-            case 'yesterday':
-                date.setDate(date.getDate() - 1);
-                setEndOfDay(date);
-                break;
-            case 'tomorrow':
-                date.setDate(date.getDate() + 1);
-                setEndOfDay(date);
-                break;
-            case 'last week':
-                date.setDate(date.getDate() - 7);
-                setEndOfDay(date);
-                break;
-            case 'next week':
-                date.setDate(date.getDate() + 7);
-                setEndOfDay(date);
-                break;
-            case 'last month':
-                date.setMonth(date.getMonth() - 1);
-                setEndOfDay(date);
-                break;
-            case 'next month':
-                date.setMonth(date.getMonth() + 1);
-                setEndOfDay(date);
-                break;
-            case 'last year':
-                date.setYear(date.getYear() - 1);
-                setEndOfDay(date);
-                break;
-            case 'next year':
-                date.setYear(date.getYear() + 1);
-                setEndOfDay(date);
-                break;
-            case 'whenever':
-                date = new Date(0);
-                break;
-            default:
-                throw new Error('Invalid vague date');
-        }
-
-        return date;
-    }
-
-    function setEndOfDay (date) {
-        date.setHours(23);
-        date.setMinutes(59);
-        date.setSeconds(59);
-        date.setMilliseconds(999);
     }
 
     function exportFunctions () {
